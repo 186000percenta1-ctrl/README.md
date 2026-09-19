@@ -1,0 +1,23 @@
+Service Advising & Management
+│
+├── 📊 Briefing
+│   ├── Overall Theme
+│   ├── Inspection-Based Selling
+│   ├── Service Advisor
+│   ├── Trust & Relationships
+│   ├── Customer Expectations
+│   └── Communication
+│
+├── 🔍 Inspection
+│   ├── Multipoint Inspection
+│   ├── 🟢 Green
+│   ├── 🟡 Yellow
+│   ├── 🔴 Red
+│   └── Customer Education Flow
+│
+└── 👥 Roles
+    ├── Service Advisor
+    ├── Technician
+    ├── Customer
+    ├── Service Manager
+    └── Dispatcher
