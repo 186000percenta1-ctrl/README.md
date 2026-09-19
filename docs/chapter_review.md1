@@ -1,36 +1,21 @@
-SERVICE ADVISOR ACADEMY
+automotive_service_app/
 │
-├── 🏠 HOME
-│   ├── Core Mission
-│   ├── Overall Theme
-│   └── Target Audience
+├── lib/
+│   ├── main.dart
+│   │
+│   ├── models/
+│   │   └── service_step.dart
+│   │
+│   ├── screens/
+│   │   └── service_timeline_screen.dart
+│   │
+│   └── widgets/
+│       ├── timeline_item.dart
+│       ├── progress_header.dart
+│       └── service_card.dart
 │
-├── 🎓 TRAINING
-│   ├── Safety Recommendations
-│   ├── Manufacturer Recommendations
-│   ├── Value & Benefits
-│   ├── Ethical Closing
-│   ├── Customer Feedback
-│   ├── Follow-Up
-│   ├── Incentives to Return
-│   └── Trust & Relationships
-│
-├── 🔍 INSPECTION
-│   ├── GREEN — Good Condition
-│   ├── YELLOW — Future Recommendation
-│   └── RED — Immediate Safety Concern
-│
-├── 💬 ROLEPLAY
-│   ├── Red Safety Finding
-│   ├── Yellow Recommendation
-│   ├── Additional Service
-│   ├── Repair Delay
-│   └── Customer Feedback
-│
-└── 💡 KEY QUOTES
-    ├── Sales + Service
-    ├── Mutual Benefit
-    ├── Customer/Technician Buffer
-    ├── First Point of Contact
-    ├── Customer Expectations
-    └── Trust + Retention
+├── android/
+├── ios/
+├── web/
+├── test/
+└── pubspec.yaml
