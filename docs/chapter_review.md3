@@ -1,0 +1,652 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const ServiceAdvisingApp());
+}
+
+class ServiceAdvisingApp extends StatelessWidget {
+  const ServiceAdvisingApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Service Advising & Management',
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+          brightness: Brightness.light,
+        ),
+      ),
+      home: const BriefingDashboard(),
+    );
+  }
+}
+
+// ------------------------------------------------------------
+// DATA MODELS
+// ------------------------------------------------------------
+
+class BriefingSection {
+  final String title;
+  final String summary;
+  final IconData icon;
+  final List<String> points;
+
+  const BriefingSection({
+    required this.title,
+    required this.summary,
+    required this.icon,
+    required this.points,
+  });
+}
+
+class CharacterRole {
+  final String name;
+  final String role;
+  final String description;
+  final IconData icon;
+
+  const CharacterRole({
+    required this.name,
+    required this.role,
+    required this.description,
+    required this.icon,
+  });
+}
+
+// ------------------------------------------------------------
+// MAIN SCREEN
+// ------------------------------------------------------------
+
+class BriefingDashboard extends StatefulWidget {
+  const BriefingDashboard({super.key});
+
+  @override
+  State<BriefingDashboard> createState() =>
+      _BriefingDashboardState();
+}
+
+class _BriefingDashboardState extends State<BriefingDashboard> {
+  int selectedTab = 0;
+
+  final List<BriefingSection> sections = const [
+    BriefingSection(
+      title: 'Inspection-Based Selling',
+      summary:
+          'Use documented vehicle inspections as the foundation for service recommendations.',
+      icon: Icons.fact_check,
+      points: [
+        'Perform a thorough vehicle inspection.',
+        'Document findings on the inspection report.',
+        'Use evidence to explain recommended services.',
+        'Help customers understand why work is recommended.',
+        'Reduce the perception that services are being recommended without evidence.',
+      ],
+    ),
+    BriefingSection(
+      title: 'Service Advisor as the Central Figure',
+      summary:
+          'The Service Advisor connects the customer, technician, and dealership.',
+      icon: Icons.support_agent,
+      points: [
+        'Greet and communicate with customers.',
+        'Gather vehicle and service information.',
+        'Create repair orders.',
+        'Present estimates and quotes.',
+        'Communicate technician findings.',
+        'Set customer expectations.',
+        'Coordinate vehicle delivery.',
+        'Follow up after service.',
+      ],
+    ),
+    BriefingSection(
+      title: 'Building Trust & Relationships',
+      summary:
+          'Trust is developed through honesty, transparency, communication, and keeping promises.',
+      icon: Icons.handshake,
+      points: [
+        'Create a professional first impression.',
+        'Listen carefully to customer concerns.',
+        'Be transparent about recommended work.',
+        'Explain technical information clearly.',
+        'Keep promises and commitments.',
+        'Use vehicle delivery as another relationship-building opportunity.',
+      ],
+    ),
+    BriefingSection(
+      title: 'Customer Expectations',
+      summary:
+          'Accurate expectations help create a predictable and trusted service experience.',
+      icon: Icons.schedule,
+      points: [
+        'Explain expected repair timelines.',
+        'Provide accurate estimates.',
+        'Communicate changes promptly.',
+        'Explain delays when they occur.',
+        'Deliver according to agreed expectations.',
+      ],
+    ),
+    BriefingSection(
+      title: 'Effective Communication',
+      summary:
+          'Communication is required throughout the entire service process.',
+      icon: Icons.forum,
+      points: [
+        'Active listening.',
+        'Clear explanations.',
+        'Avoid unnecessary technical jargon.',
+        'Keep customers informed.',
+        'Explain diagnosis and recommendations.',
+        'Confirm customer authorization.',
+        'Review completed work during delivery.',
+      ],
+    ),
+    BriefingSection(
+      title: 'Inspection Report',
+      summary:
+          'The multipoint inspection is both a documentation tool and a customer education tool.',
+      icon: Icons.assignment,
+      points: [
+        'Green: Condition is acceptable; no immediate concern.',
+        'Yellow: Future recommendation that should be monitored or planned.',
+        'Red: Requires attention based on the inspection findings.',
+        'Use documented findings to explain recommendations.',
+        'Help customers prioritize current and future maintenance.',
+      ],
+    ),
+  ];
+
+  final List<CharacterRole> characters = const [
+    CharacterRole(
+      name: 'Service Advisor',
+      role: 'Customer / Technician Intermediary',
+      description:
+          'Responsible for customer service, communication, sales, repair orders, estimates, diagnosis reporting, vehicle delivery, and follow-up.',
+      icon: Icons.support_agent,
+    ),
+    CharacterRole(
+      name: 'Technician',
+      role: 'Inspection / Diagnosis / Repair',
+      description:
+          'Inspects, diagnoses, and repairs vehicles. Provides technical findings that the Service Advisor communicates to the customer.',
+      icon: Icons.build,
+    ),
+    CharacterRole(
+      name: 'Customer',
+      role: 'Vehicle Owner / Service Customer',
+      description:
+          'Seeks reliable and affordable vehicle service and values trust, transparency, communication, and a satisfactory outcome.',
+      icon: Icons.person,
+    ),
+    CharacterRole(
+      name: 'Service Manager',
+      role: 'Department Leadership',
+      description:
+          'Oversees service department performance, including operational results, sales activity, and customer satisfaction.',
+      icon: Icons.manage_accounts,
+    ),
+    CharacterRole(
+      name: 'Dispatcher',
+      role: 'Workflow Coordinator',
+      description:
+          'Coordinates the movement of repair work between Service Advisors and Technicians.',
+      icon: Icons.route,
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Service Advising & Management',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+      ),
+      body: IndexedStack(
+        index: selectedTab,
+        children: [
+          _buildBriefing(),
+          _buildInspectionSystem(),
+          _buildCharacters(),
+        ],
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: selectedTab,
+        onDestinationSelected: (index) {
+          setState(() {
+            selectedTab = index;
+          });
+        },
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.dashboard_outlined),
+            selectedIcon: Icon(Icons.dashboard),
+            label: 'Briefing',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.fact_check_outlined),
+            selectedIcon: Icon(Icons.fact_check),
+            label: 'Inspection',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.groups_outlined),
+            selectedIcon: Icon(Icons.groups),
+            label: 'Roles',
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ----------------------------------------------------------
+  // BRIEFING TAB
+  // ----------------------------------------------------------
+
+  Widget _buildBriefing() {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        _buildHeroCard(),
+        const SizedBox(height: 20),
+
+        const Text(
+          'Overall Theme',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        const SizedBox(height: 10),
+
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(18),
+            child: Text(
+              'The Service Advisor is a central link between the customer, technician, and dealership. The process emphasizes inspection-based service, clear communication, customer trust, expectation management, and long-term relationships.',
+              style: TextStyle(
+                fontSize: 16,
+                height: 1.5,
+                color: Colors.grey.shade800,
+              ),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 24),
+
+        const Text(
+          'Key Ideas & Concepts',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        const SizedBox(height: 10),
+
+        ...sections.map(_buildSectionCard),
+      ],
+    );
+  }
+
+  Widget _buildHeroCard() {
+    return Card(
+      elevation: 4,
+      child: Container(
+        padding: const EdgeInsets.all(22),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          gradient: LinearGradient(
+            colors: [
+              Theme.of(context).colorScheme.primary,
+              Theme.of(context).colorScheme.primaryContainer,
+            ],
+          ),
+        ),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.directions_car,
+              size: 42,
+              color: Colors.white,
+            ),
+            SizedBox(height: 14),
+            Text(
+              'Service Advising & Management',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Sample Chapter Review',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 17,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionCard(BriefingSection section) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: ExpansionTile(
+        leading: CircleAvatar(
+          child: Icon(section.icon),
+        ),
+        title: Text(
+          section.title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        subtitle: Text(section.summary),
+        childrenPadding: const EdgeInsets.fromLTRB(
+          20,
+          0,
+          20,
+          16,
+        ),
+        children: [
+          const Divider(),
+          ...section.points.map(
+            (point) => ListTile(
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+              leading: const Icon(
+                Icons.check_circle_outline,
+                size: 20,
+              ),
+              title: Text(point),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ----------------------------------------------------------
+  // INSPECTION TAB
+  // ----------------------------------------------------------
+
+  Widget _buildInspectionSystem() {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        const Text(
+          'Multipoint Inspection',
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        Text(
+          'Use the inspection report to document vehicle condition, educate the customer, and prioritize service recommendations.',
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.grey.shade700,
+          ),
+        ),
+
+        const SizedBox(height: 24),
+
+        _inspectionCard(
+          title: 'GREEN',
+          subtitle: 'Condition looks good',
+          icon: Icons.check_circle,
+          description:
+              'No immediate concern identified based on the inspection.',
+          color: Colors.green,
+        ),
+
+        _inspectionCard(
+          title: 'YELLOW',
+          subtitle: 'Future recommendation',
+          icon: Icons.warning_amber,
+          description:
+              'The item should be monitored or planned for future service.',
+          color: Colors.orange,
+        ),
+
+        _inspectionCard(
+          title: 'RED',
+          subtitle: 'Requires attention',
+          icon: Icons.error,
+          description:
+              'The inspection identifies an item that requires attention or further discussion.',
+          color: Colors.red,
+        ),
+
+        const SizedBox(height: 24),
+
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Customer Education Flow',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _flowStep(
+                  '1',
+                  'Inspect',
+                  'Identify vehicle conditions.',
+                ),
+                _flowStep(
+                  '2',
+                  'Document',
+                  'Record findings on the inspection report.',
+                ),
+                _flowStep(
+                  '3',
+                  'Explain',
+                  'Communicate findings clearly to the customer.',
+                ),
+                _flowStep(
+                  '4',
+                  'Prioritize',
+                  'Separate current concerns from future recommendations.',
+                ),
+                _flowStep(
+                  '5',
+                  'Authorize',
+                  'Obtain customer approval before proceeding.',
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _inspectionCard({
+    required String title,
+    required String subtitle,
+    required String description,
+    required IconData icon,
+    required Color color,
+  }) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 14),
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(14),
+        leading: CircleAvatar(
+          backgroundColor: color,
+          child: Icon(
+            icon,
+            color: Colors.white,
+          ),
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 6),
+          child: Text(
+            '$subtitle\n$description',
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _flowStep(
+    String number,
+    String title,
+    String description,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            radius: 16,
+            child: Text(number),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(description),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ----------------------------------------------------------
+  // CHARACTERS / ROLES TAB
+  // ----------------------------------------------------------
+
+  Widget _buildCharacters() {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        const Text(
+          'Cast of Characters',
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        Text(
+          'Key people involved in the automotive service process.',
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.grey.shade700,
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        ...characters.map(_buildCharacterCard),
+
+        const SizedBox(height: 20),
+
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              children: [
+                const Icon(
+                  Icons.account_tree,
+                  size: 42,
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Service Department Connection',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Customer ↔ Service Advisor ↔ Technician',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Service Manager provides department leadership while the Dispatcher helps coordinate the workflow between advisors and technicians.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.grey.shade700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCharacterCard(CharacterRole character) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(14),
+        leading: CircleAvatar(
+          radius: 26,
+          child: Icon(character.icon),
+        ),
+        title: Text(
+          character.name,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 17,
+          ),
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 5),
+          child: Text(
+            '${character.role}\n\n${character.description}',
+          ),
+        ),
+      ),
+    );
+  }
+}
