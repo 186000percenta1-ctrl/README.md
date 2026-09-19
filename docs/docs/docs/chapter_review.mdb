@@ -1,0 +1,736 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const ServiceAdvisingApp());
+}
+
+class ServiceAdvisingApp extends StatelessWidget {
+  const ServiceAdvisingApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Service Advising & Management',
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+        ),
+        scaffoldBackgroundColor: const Color(0xFFF5F7FA),
+      ),
+      home: const ServiceManagementDashboard(),
+    );
+  }
+}
+
+// ============================================================
+// MODELS
+// ============================================================
+
+class LearningSection {
+  final String title;
+  final String summary;
+  final IconData icon;
+  final List<String> points;
+
+  const LearningSection({
+    required this.title,
+    required this.summary,
+    required this.icon,
+    required this.points,
+  });
+}
+
+class Principle {
+  final String title;
+  final String description;
+  final IconData icon;
+
+  const Principle({
+    required this.title,
+    required this.description,
+    required this.icon,
+  });
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+
+class ServiceManagementDashboard extends StatefulWidget {
+  const ServiceManagementDashboard({super.key});
+
+  @override
+  State<ServiceManagementDashboard> createState() =>
+      _ServiceManagementDashboardState();
+}
+
+class _ServiceManagementDashboardState
+    extends State<ServiceManagementDashboard> {
+  int selectedIndex = 0;
+
+  final List<LearningSection> sections = const [
+
+    // --------------------------------------------------------
+    // 1. SAFETY RECOMMENDATIONS
+    // --------------------------------------------------------
+
+    LearningSection(
+      title: 'Safety Recommendations',
+      summary:
+          'Identify services that should be completed during the current visit or soon afterward.',
+      icon: Icons.health_and_safety,
+      points: [
+        'Identify conditions that may affect safe vehicle operation.',
+        'Clearly explain the importance of the recommendation.',
+        'Prioritize immediate safety concerns.',
+        'Explain what could happen if an important repair is delayed.',
+        'Document the recommendation on the inspection report.',
+      ],
+    ),
+
+    // --------------------------------------------------------
+    // 2. MANUFACTURER RECOMMENDATIONS
+    // --------------------------------------------------------
+
+    LearningSection(
+      title: 'Manufacturer Recommendations',
+      summary:
+          'Use manufacturer maintenance schedules as a reference when discussing recommended services.',
+      icon: Icons.menu_book,
+      points: [
+        'Review the vehicle manufacturer maintenance schedule.',
+        'Match services to vehicle mileage and maintenance intervals.',
+        'Explain why the service is recommended.',
+        'Use documented maintenance requirements to support the conversation.',
+        'Help customers plan future maintenance.',
+      ],
+    ),
+
+    // --------------------------------------------------------
+    // 3. VALUE & BENEFITS
+    // --------------------------------------------------------
+
+    LearningSection(
+      title: 'Value & Benefits',
+      summary:
+          'The Service Advisor should clearly explain the value of the service experience.',
+      icon: Icons.workspace_premium,
+      points: [
+        'Explain the value of the work being performed.',
+        'Highlight qualified or factory-trained technicians when applicable.',
+        'Explain applicable warranty programs.',
+        'Discuss available loyalty benefits or discounts.',
+        'Emphasize convenience and service quality.',
+        'Connect the service recommendation to the customer’s needs.',
+      ],
+    ),
+
+    // --------------------------------------------------------
+    // 4. CLOSING THE SALE
+    // --------------------------------------------------------
+
+    LearningSection(
+      title: 'Closing the Sale',
+      summary:
+          'Recommended services should be presented professionally and ethically.',
+      icon: Icons.handshake,
+      points: [
+        'Focus on the customer’s actual vehicle needs.',
+        'Explain the purpose and benefit of the service.',
+        'Answer customer questions.',
+        'Address concerns without pressure.',
+        'Confirm that the customer understands the recommendation.',
+        'Obtain authorization before performing additional work.',
+        'Follow the expectations established earlier in the process.',
+      ],
+    ),
+
+    // --------------------------------------------------------
+    // 5. CUSTOMER FEEDBACK
+    // --------------------------------------------------------
+
+    LearningSection(
+      title: 'Customer Feedback & Follow-Up',
+      summary:
+          'Feedback provides an opportunity to improve service and strengthen customer relationships.',
+      icon: Icons.feedback,
+      points: [
+        'Invite customers to provide feedback.',
+        'Review survey results when available.',
+        'Follow up after the service visit.',
+        'Address unresolved concerns.',
+        'Identify opportunities to improve the customer experience.',
+        'Use feedback as a service-quality measurement.',
+      ],
+    ),
+
+    // --------------------------------------------------------
+    // 6. INCENTIVES
+    // --------------------------------------------------------
+
+    LearningSection(
+      title: 'Incentives to Return',
+      summary:
+          'Specials, discounts, and loyalty programs can encourage repeat visits.',
+      icon: Icons.card_giftcard,
+      points: [
+        'Promote applicable service specials.',
+        'Explain loyalty programs.',
+        'Offer qualifying discounts when available.',
+        'Make customers aware of future maintenance opportunities.',
+        'Encourage customers to schedule their next visit.',
+      ],
+    ),
+  ];
+
+  final List<Principle> principles = const [
+
+    Principle(
+      title: 'Build Trust',
+      description:
+          'Be honest, transparent, respectful, and consistent throughout the service process.',
+      icon: Icons.verified_user,
+    ),
+
+    Principle(
+      title: 'Listen First',
+      description:
+          'Understand the customer’s concern before discussing additional recommendations.',
+      icon: Icons.hearing,
+    ),
+
+    Principle(
+      title: 'Never Assume',
+      description:
+          'Do not assume a customer understands automotive terminology or technical concepts.',
+      icon: Icons.question_mark,
+    ),
+
+    Principle(
+      title: 'Stay Professional',
+      description:
+          'Remain respectful and professional regardless of how a previous customer interaction went.',
+      icon: Icons.person_pin,
+    ),
+
+    Principle(
+      title: 'Inspect With the Customer',
+      description:
+          'When practical, walk around the vehicle with the customer and document its condition.',
+      icon: Icons.directions_car,
+    ),
+
+    Principle(
+      title: 'Explain Value',
+      description:
+          'Connect recommended services to vehicle condition, maintenance requirements, safety, and customer needs.',
+      icon: Icons.lightbulb,
+    ),
+
+    Principle(
+      title: 'Set Expectations',
+      description:
+          'Clearly communicate expected costs, timelines, next steps, and changes.',
+      icon: Icons.schedule,
+    ),
+
+    Principle(
+      title: 'Follow Up',
+      description:
+          'Maintain the relationship after the vehicle has been delivered.',
+      icon: Icons.phone_callback,
+    ),
+  ];
+
+  final List<String> quotes = const [
+    'Service advisors exist to facilitate sales within a repair facility, and their job is to push additional sales. However, the job title is service, so there is a whole other layer to the field.',
+
+    'For a dealership or repair facility to be successful, the relationship has to be mutually beneficial for the customer and the service department.',
+
+    'The service department acts as a buffer between the customers and the technicians to create a professional environment and instill trust in those who are leaving their vehicles for maintenance repair.',
+
+    'The service advisor is the first person that a customer will see when entering a dealership and will be the person who guides them through the service process.',
+
+    'Remember that when a customer hands over their keys and leaves their vehicle for the day, expectations are already set in their mind.',
+
+    'Trust and long-term relationships are the two key factors in customer retention and building a successful dealership.',
+  ];
+
+  // ==========================================================
+  // BUILD
+  // ==========================================================
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Service Advising & Management',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+      ),
+
+      body: IndexedStack(
+        index: selectedIndex,
+        children: [
+          _buildOverview(),
+          _buildLearningCenter(),
+          _buildPrinciples(),
+          _buildQuotes(),
+        ],
+      ),
+
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: selectedIndex,
+        onDestinationSelected: (index) {
+          setState(() {
+            selectedIndex = index;
+          });
+        },
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.dashboard_outlined),
+            selectedIcon: Icon(Icons.dashboard),
+            label: 'Overview',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.school_outlined),
+            selectedIcon: Icon(Icons.school),
+            label: 'Training',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.rule_outlined),
+            selectedIcon: Icon(Icons.rule),
+            label: 'Principles',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.format_quote_outlined),
+            selectedIcon: Icon(Icons.format_quote),
+            label: 'Quotes',
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ==========================================================
+  // OVERVIEW
+  // ==========================================================
+
+  Widget _buildOverview() {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+
+        _buildHero(),
+
+        const SizedBox(height: 20),
+
+        const Text(
+          'Chapter Focus',
+          style: TextStyle(
+            fontSize: 23,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        const SizedBox(height: 10),
+
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(18),
+            child: Text(
+              'A successful Service Advisor combines automotive knowledge, communication, customer service, ethical sales practices, and relationship management.',
+              style: TextStyle(
+                fontSize: 16,
+                height: 1.5,
+                color: Colors.grey.shade800,
+              ),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        _buildMetricCard(
+          icon: Icons.search,
+          title: 'Inspection',
+          value: 'Evidence-Based',
+          description:
+              'Use documented findings to support service recommendations.',
+        ),
+
+        _buildMetricCard(
+          icon: Icons.handshake,
+          title: 'Relationships',
+          value: 'Trust-Based',
+          description:
+              'Build long-term relationships through honesty and communication.',
+        ),
+
+        _buildMetricCard(
+          icon: Icons.sell,
+          title: 'Service Sales',
+          value: 'Needs-Based',
+          description:
+              'Present recommended services according to customer and vehicle needs.',
+        ),
+
+        _buildMetricCard(
+          icon: Icons.replay,
+          title: 'Retention',
+          value: 'Long-Term',
+          description:
+              'Use follow-up, feedback, and incentives to encourage continued relationships.',
+        ),
+
+        const SizedBox(height: 20),
+
+        const Text(
+          'Target Audience',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        const SizedBox(height: 10),
+
+        Card(
+          child: ListTile(
+            leading: const CircleAvatar(
+              child: Icon(Icons.support_agent),
+            ),
+            title: const Text(
+              'Current & Aspiring Service Advisors',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: const Text(
+              'The material emphasizes both automotive knowledge and interpersonal skills.',
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHero() {
+    return Card(
+      elevation: 4,
+      child: Container(
+        padding: const EdgeInsets.all(22),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          gradient: LinearGradient(
+            colors: [
+              Theme.of(context).colorScheme.primary,
+              Theme.of(context).colorScheme.primaryContainer,
+            ],
+          ),
+        ),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.directions_car,
+              color: Colors.white,
+              size: 45,
+            ),
+            SizedBox(height: 12),
+            Text(
+              'Service Advising & Management',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 5),
+            Text(
+              'Chapter Review & Training Dashboard',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMetricCard({
+    required IconData icon,
+    required String title,
+    required String value,
+    required String description,
+  }) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(14),
+        leading: CircleAvatar(
+          radius: 26,
+          child: Icon(icon),
+        ),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        subtitle: Text(
+          '$value\n$description',
+        ),
+      ),
+    );
+  }
+
+  // ==========================================================
+  // TRAINING CENTER
+  // ==========================================================
+
+  Widget _buildLearningCenter() {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+
+        const Text(
+          'Training Center',
+          style: TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        Text(
+          'Core concepts from the chapter review.',
+          style: TextStyle(
+            color: Colors.grey.shade700,
+            fontSize: 16,
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        ...sections.map(_buildLearningCard),
+      ],
+    );
+  }
+
+  Widget _buildLearningCard(
+    LearningSection section,
+  ) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: ExpansionTile(
+        leading: CircleAvatar(
+          child: Icon(section.icon),
+        ),
+        title: Text(
+          section.title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        subtitle: Text(section.summary),
+        childrenPadding: const EdgeInsets.fromLTRB(
+          20,
+          0,
+          20,
+          15,
+        ),
+        children: [
+          const Divider(),
+
+          ...section.points.map(
+            (point) => ListTile(
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+              leading: const Icon(
+                Icons.check_circle_outline,
+              ),
+              title: Text(point),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ==========================================================
+  // PRINCIPLES
+  // ==========================================================
+
+  Widget _buildPrinciples() {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+
+        const Text(
+          'Service Advisor Principles',
+          style: TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        Text(
+          'Practical behaviors emphasized by the chapter.',
+          style: TextStyle(
+            color: Colors.grey.shade700,
+            fontSize: 16,
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        ...principles.asMap().entries.map(
+          (entry) {
+            final index = entry.key;
+            final principle = entry.value;
+
+            return Card(
+              margin: const EdgeInsets.only(bottom: 12),
+              child: ListTile(
+                contentPadding: const EdgeInsets.all(14),
+                leading: CircleAvatar(
+                  child: Text('${index + 1}'),
+                ),
+                title: Text(
+                  principle.title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                subtitle: Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Text(principle.description),
+                ),
+                trailing: Icon(principle.icon),
+              ),
+            );
+          },
+        ),
+
+        const SizedBox(height: 15),
+
+        _buildGoldenRule(),
+      ],
+    );
+  }
+
+  Widget _buildGoldenRule() {
+    return Card(
+      elevation: 3,
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            const Icon(
+              Icons.star,
+              size: 42,
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Core Principle',
+              style: TextStyle(
+                fontSize: 21,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'A successful Service Advisor combines customer satisfaction, transparent communication, ethical service recommendations, and long-term relationship building.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                height: 1.5,
+                color: Colors.grey.shade800,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ==========================================================
+  // QUOTES
+  // ==========================================================
+
+  Widget _buildQuotes() {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+
+        const Text(
+          'Key Quotes',
+          style: TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        Text(
+          'Selected quotations supplied in the chapter review.',
+          style: TextStyle(
+            color: Colors.grey.shade700,
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        ...quotes.asMap().entries.map(
+          (entry) {
+            final index = entry.key;
+            final quote = entry.value;
+
+            return Card(
+              margin: const EdgeInsets.only(bottom: 14),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start,
+                  children: [
+                    const Icon(
+                      Icons.format_quote,
+                      size: 32,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      quote,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        height: 1.5,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Quote ${index + 1}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
